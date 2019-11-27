@@ -45,17 +45,26 @@ func main() {
 	var dnsRecord DNSRecord
 	var raw, deduped []string
 
-	//get 24h ago epoch time
-	now := time.Now()
-	secs := now.Unix() - (24 * 3600)
-
+	flagDaysBack := flag.Int("t", 14, "historical number of days to search")
 	flagDomain := flag.String("d", "(*.)example.com", "target domain name/wildcard")
 	flag.Parse()
 	domain := url.QueryEscape(*flagDomain)
 
+	//get epoch time
+	now := time.Now()
+	secs := now.Unix() - int64(*flagDaysBack*24*3600)
+
 	if domain == "%28%2A.%29example.com" {
+		fmt.Println("           _       ")
+		fmt.Println("  __ _  __| | __ _ ")
+		fmt.Println(" / _` |/ _` |/ _` |")
+		fmt.Println("| (_| | (_| | (_| | go-dnsdb-query by ytcracker")
+		fmt.Println(" \\__, |\\__,_|\\__, |")
+		fmt.Println(" |___/          |_|")
+		fmt.Printf("\n")
 		fmt.Fprintf(flag.CommandLine.Output(), "Usage of %s:\n", os.Args[0])
 		flag.PrintDefaults()
+		fmt.Println("")
 		return
 	}
 
@@ -113,7 +122,7 @@ func removeDuplicates(elements []string) []string {
 
 	// Place all keys from the map into a slice.
 	result := []string{}
-	for key, _ := range encountered {
+	for key := range encountered {
 		result = append(result, key)
 	}
 	return result
